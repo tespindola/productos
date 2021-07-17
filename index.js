@@ -1,46 +1,52 @@
+// Libraries
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
-const app = express();
-app.use(bodyParser.urlencoded());
-app.use(bodyParser.json());
+import handlebars from 'express-handlebars';
+
+// Routes
+import routesProducts from './routes/products.js';
 
 // Controladores
 import Producto from './controllers/Producto.js';
 
-const PUERTO = process.env.PORT || 8080;
+const app = express();
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
+
+const PUERTO = process.env.PORT || 8000;
 
 const server = app.listen(PUERTO, () => {
     console.log(`Servidor iniciado en el puerto: ${server.address().port}`);
 });
 server.on('error', error => console.log(`Error al iniciar el servidor: ${error}`));
 
-const routerProductos = express.Router();
+app.engine("hbs", handlebars({
+    extname: 'hbs'
+}));
 
-routerProductos.get('/productos/', function(req, res) {
-    let productos = new Producto().index();
-    res.send(productos);
-});
+app.set('view engine', 'hbs');
+app.set('views', './views/hbs/');
 
-routerProductos.get('/productos/:id', function(req, res) {
-    let producto = new Producto().index(req.params.id);
-    res.send(producto);
-});
+/* app.set('views', './views/ejs/');
+app.set('view engine', 'ejs'); */
 
-routerProductos.post('/productos', function(req, res) {
-    res.send(new Producto().create({title: req.body.title, price: req.body.price, thumbnail: req.body.thumbnail}));
-});
+/* app.set('views', './views/pug/');
+app.set('view engine', 'pug'); */
 
-routerProductos.put('/productos/:id', function(req, res) {
-    res.send(new Producto().update({title: req.body.title, price: req.body.price, thumbnail: req.body.thumbnail, id: req.params.id}));
-});
+app.use(express.static(`${path.resolve()}/public`));
 
-routerProductos.delete('/productos/:id', function(req, res) {
-    res.send(new Producto().delete(req.params.id));
-});
-
-app.use('/api', routerProductos);
+app.use('/api', routesProducts);
 
 app.get('/', function(req, res) {
-    res.sendFile(`${path.resolve()}/views/index.html`);
+    res.redirect('/productos');
+});
+
+app.get('/productos', function(req, res) {
+    let productos = new Producto().index();
+    res.render('products/index', {productos});
+});
+
+app.get('/productos/create', function(req, res) {
+    res.render('products/create');
 });

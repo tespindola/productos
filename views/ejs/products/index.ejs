@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+    <%- include('../layouts/head.ejs'); -%>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mt-2">
+                <h2>Productos registrados</h2>
+                <hr>
+                <a class="btn btn-outline-success btn-sm float-end" href="/productos/create">Crear producto</a>
+                <table class="table table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Imagen</th>
+                        </tr>
+                    </thead>   
+                    <tbody>
+                        <% productos.forEach(function(producto) { %>
+                            <tr>
+                                <td><%= producto.title %></td>
+                                <td>$ <%= producto.price %></td>
+                                <td>
+                                    <img src="<%= producto.thumbnail %>" class="img-thumbnail ancho-img-product"/>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
