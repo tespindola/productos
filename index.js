@@ -3,6 +3,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
 import handlebars from 'express-handlebars';
+import http from 'http';
+import {Server} from 'socket.io';
 
 // Routes
 import routesProducts from './routes/products.js';
@@ -13,16 +15,18 @@ import Producto from './controllers/Producto.js';
 const app = express();
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
+const server = http.createServer(app);
+const io = new Server(server);
 
 const PUERTO = process.env.PORT || 8000;
 
-const server = app.listen(PUERTO, () => {
+server.listen(PUERTO, () => {
     console.log(`Servidor iniciado en el puerto: ${server.address().port}`);
 });
 server.on('error', error => console.log(`Error al iniciar el servidor: ${error}`));
 
 app.engine("hbs", handlebars({
-    extname: 'hbs'
+    extname: 'hbs',
 }));
 
 app.set('view engine', 'hbs');
@@ -36,7 +40,7 @@ app.set('view engine', 'pug'); */
 
 app.use(express.static(`${path.resolve()}/public`));
 
-app.use('/api', routesProducts);
+app.use('/api', routesProducts(io));
 
 app.get('/', function(req, res) {
     res.redirect('/productos');

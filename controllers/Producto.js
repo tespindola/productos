@@ -20,7 +20,7 @@ export default class Producto{
         });
         fs.writeFileSync('./data/productos.json', JSON.stringify(productos));
 
-        return {msg: 'creado'};
+        return productos[productos.length-1];
     }
 
     update({title, price, thumbnail, id}){
