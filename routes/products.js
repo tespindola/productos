@@ -7,15 +7,15 @@ export default (io) => {
     const router = express.Router();
 
     router.get('/productos/:id', function(req, res) {
-        console.log(p);
         let producto = new Producto().index(req.params.id);
         res.send(producto);
     });
 
     router.post('/productos', function(req, res) {
+        console.log(req.body);
         let producto = new Producto().create({title: req.body.title, price: req.body.price, thumbnail: req.body.thumbnail});
         io.emit('new-product', producto);
-        res.redirect('/productos');
+        res.send('success');
     });
 
     router.put('/productos/:id', function(req, res) {
