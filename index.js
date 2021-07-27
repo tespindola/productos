@@ -8,9 +8,11 @@ import {Server} from 'socket.io';
 
 // Routes
 import routesProducts from './routes/products.js';
+import routesChats from './routes/chat.js';
 
 // Controladores
 import Producto from './controllers/Producto.js';
+import Chat from './controllers/Chat.js';
 
 const app = express();
 app.use(bodyParser.urlencoded());
@@ -27,6 +29,7 @@ server.on('error', error => console.log(`Error al iniciar el servidor: ${error}`
 
 app.engine("hbs", handlebars({
     extname: 'hbs',
+    partialsDir: `${path.resolve()}/views/hbs/products`,
 }));
 
 app.set('view engine', 'hbs');
@@ -41,6 +44,7 @@ app.set('view engine', 'pug'); */
 app.use(express.static(`${path.resolve()}/public`));
 
 app.use('/api', routesProducts(io));
+app.use('/api/chat', routesChats(io));
 
 app.get('/', function(req, res) {
     res.redirect('/productos');
@@ -48,7 +52,8 @@ app.get('/', function(req, res) {
 
 app.get('/productos', function(req, res) {
     let productos = new Producto().index();
-    res.render('products/index', {productos});
+    let chat = new Chat().index();
+    res.render('products/index', {productos, chat});
 });
 
 app.get('/productos/create', function(req, res) {

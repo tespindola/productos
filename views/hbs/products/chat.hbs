@@ -1,0 +1,45 @@
+<div class="card shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <h2>Mensajes:</h2>
+                <input type="email" id="email" placeholder="Ingresar tu email" class="form-control">
+                <hr>
+                <div id="div-chat">
+                    {{#each chat }}
+                        <span class="badge bg-dark">{{ this.email }}:</span> {{ this.msg }}
+                        <br>
+                    {{/each }}
+                </div>
+                <hr>
+                <textarea id="msg" rows="4" class="form-control" placeholder="Ingresar el mensaje"></textarea>
+                <button type="button" class="btn btn-outline-success btn- mt-2 btn-sm me-2" onclick="sendMsg()">Enviar mensaje</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var socket = io();
+
+    socket.on('new-msg', data => {
+        let div_chat = document.getElementById('div-chat');
+        div_chat.innerHTML += `<span class="badge bg-dark">${ data.email }:</span> ${ data.msg }`;
+    });
+
+    async function sendMsg(){
+        if(document.getElementById('email').value != '' && document.getElementById('msg').value != ''){
+            const respose = await fetch('/api/chat/new-msg', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: document.getElementById('email').value,
+                    msg: document.getElementById('msg').value,
+                })
+            });
+            document.getElementById('msg').value = '';
+        }
+    }
+</script>

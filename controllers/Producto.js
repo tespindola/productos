@@ -1,6 +1,14 @@
 import fs from 'fs';
 
 export default class Producto{
+    constructor() {
+        try {
+            fs.readFileSync('./data/productos.json');
+        } catch (error) {
+            fs.writeFileSync('./data/productos.json', JSON.stringify([]));
+        }
+    }
+
     index(id){
         let productos = JSON.parse(fs.readFileSync('./data/productos.json'));
         if(!id){

@@ -1,13 +1,34 @@
-<div class="row justify-content-center">
-    <h2 class="text-center">Crear un nuevo producto</h2>
-    <hr>
-    <div class="col-md-6">
-        <form action="/api/productos" method="POST" class="text-center">
-            <input type="text" name="title" placeholder="Titulo del producto" class="form-control mb-2">
-            <input type="text" name="price" placeholder="Precio del producto" class="form-control mb-2">
-            <input type="text" name="thumbnail" placeholder="Imagen del producto" class="form-control mb-2">
-            <button type="submit" class="btn btn-outline-success mt-2 btn-sm me-2">Enviar producto</button>
-            <a href="/productos" class="btn btn-outline-info mt-2 btn-sm">Ver listado de productos</a>
-        </form>
+<div class="card shadow">
+    <div class="card-body">    
+        <div class="row">
+            <h2>Crear un nuevo producto</h2>
+            <hr>
+            <div class="col-md-6">
+                <div id="alert"></div>
+                <input type="text" id="title" placeholder="Titulo del producto" class="form-control mb-2">
+                <input type="text" id="price" placeholder="Precio del producto" class="form-control mb-2">
+                <input type="text" id="thumbnail" placeholder="Imagen del producto" class="form-control mb-2">
+                <button type="button" class="btn btn-outline-success btn- mt-2 btn-sm me-2" onclick="sendData()">Enviar producto</button>
+            </div>
+        </div>
     </div>
 </div>
+<script>
+    async function sendData(){
+        const respose = await fetch('/api/productos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: document.getElementById('title').value,
+                price: document.getElementById('price').value,
+                thumbnail: document.getElementById('thumbnail').value
+            })
+        });
+        document.getElementById('alert').innerHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert">Se creo correctamente el producto <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+        document.getElementById('title').value = '',
+        document.getElementById('price').value = '',
+        document.getElementById('thumbnail').value = '';
+    }
+</script>
