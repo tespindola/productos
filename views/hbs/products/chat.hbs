@@ -24,7 +24,7 @@
 
     socket.on('new-msg', data => {
         let div_chat = document.getElementById('div-chat');
-        div_chat.innerHTML += `<span class="badge bg-dark">${ data.email }:</span> ${ data.msg }`;
+        div_chat.innerHTML += `<span class="badge bg-dark">${ data.email }:</span> ${ data.msg }<br>`;
     });
 
     async function sendMsg(){
